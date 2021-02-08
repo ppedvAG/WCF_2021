@@ -14,9 +14,9 @@
         public string GetWetter(string location)
         {
             if (location.ToLower().Contains("nord"))
-                return "Schnee";
+                return "Schnee 🌨🌨";
             else
-                return "Bäh";
+                return "Leichter Schneefall 🌨";
         }
     }
 }

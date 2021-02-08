@@ -12,6 +12,9 @@ namespace WCF_SelfHost.Host
             var host = new ServiceHost(typeof(WetterService));
 
             host.AddServiceEndpoint(typeof(IWetterService), new NetTcpBinding(), "net.tcp://localhost:1");
+            host.AddServiceEndpoint(typeof(IWetterService), new BasicHttpBinding(), "http://localhost:2");
+            host.AddServiceEndpoint(typeof(IWetterService), new WSHttpBinding(), "http://localhost:3");
+            host.AddServiceEndpoint(typeof(IWetterService), new NetNamedPipeBinding(), "net.pipe://localhost/Wetter");
 
             host.Open();
             Console.WriteLine("Service gestartet");
