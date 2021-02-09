@@ -34,10 +34,10 @@
             </Grid.ColumnDefinitions>
             <TextBox Name="textTb"/>
             <Button Grid.Column="1" Click="SendTextClick">-></Button>
-            <Button Grid.Column="2">🖼</Button>
+            <Button Grid.Column="2" Click="SendImageClick">🖼</Button>
         </Grid>
 
         <ListBox Name="usersLb" DockPanel.Dock="Right" Width="200"/>
-        <ListBox Name="chatLb"/>
+        <ListBox Name="chatLb" ScrollViewer.PanningMode="Both"/>
     </DockPanel>
 </Window>

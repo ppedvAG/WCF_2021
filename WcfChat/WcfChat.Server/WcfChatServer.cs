@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using System.Threading;
+using System.Threading.Tasks;
 using WcfChat.Contracts;
 
 namespace WcfChat.Server
@@ -36,11 +38,26 @@ namespace WcfChat.Server
 
         private void CallForAllUsers(Action<IClient> client)
         {
-            foreach (var usr in users.ToList())
+            //Parallel.ForEach(users.ToList(), usr =>
+            //{
+            //    try
+            //    {
+            //        client.Invoke(usr.Key);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine($"ERROR: {usr.Value}: {ex.Message}");
+            //        users.Remove(usr.Key);
+            //        SendUserListToAllUsers();
+            //    }
+            //});
+
+            foreach (var usr in users.ToList().AsParallel())
             {
                 try
                 {
                     client.Invoke(usr.Key);
+
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +85,17 @@ namespace WcfChat.Server
         public void SendImage(Stream image)
         {
             Console.WriteLine($"SendImage");
+
+
+            var ms = new MemoryStream();
+            image.CopyTo(ms);
+
+            CallForAllUsers(x =>
+            {
+                ms.Position = 0;
+                //Thread.Sleep(5000);
+                x.ShowImage(ms);
+            });
         }
 
         public void SendText(string text)

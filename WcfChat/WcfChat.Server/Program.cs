@@ -11,6 +11,7 @@ namespace WcfChat.Server
             Console.WriteLine("*** WCF Chat Server ***");
 
             var bind = new NetTcpBinding();
+            bind.MaxReceivedMessageSize = int.MaxValue;
             var host = new ServiceHost(typeof(WcfChatServer));
 
             host.AddServiceEndpoint(typeof(IServer), bind, "net.tcp://localhost:1");

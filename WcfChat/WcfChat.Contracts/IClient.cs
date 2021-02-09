@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.ServiceModel;
 
 namespace WcfChat.Contracts
@@ -8,6 +9,9 @@ namespace WcfChat.Contracts
     {
         [OperationContract(IsOneWay = true)]
         void ShowText(string text);
+
+        [OperationContract(IsOneWay = true)]
+        void ShowImage(Stream image);
 
         [OperationContract(IsOneWay = true)]
         void ShowUsers(IEnumerable<string> users);

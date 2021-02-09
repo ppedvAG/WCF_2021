@@ -1,8 +1,15 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.ServiceModel;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WcfChat.Contracts;
+
 
 namespace WcfChat.Client
 {
@@ -17,14 +24,14 @@ namespace WcfChat.Client
         {
             InitializeComponent();
             SetUi(false);
-
         }
 
-       
+
 
         private void LoginClick(object sender, RoutedEventArgs e)
         {
             var netBind = new NetTcpBinding();
+            netBind.MaxReceivedMessageSize = int.MaxValue;
             var netAdr = "net.tcp://localhost:1";
 
             var dcf = new DuplexChannelFactory<IServer>(this, netBind, netAdr);
@@ -45,8 +52,8 @@ namespace WcfChat.Client
         {
             loginBtn.IsEnabled = !isLoggedIn;
             userNameTb.IsEnabled = !isLoggedIn;
-            
-            
+
+
             textTb.IsEnabled = isLoggedIn;
             logoutBtn.IsEnabled = isLoggedIn;
         }
@@ -92,6 +99,30 @@ namespace WcfChat.Client
             }
         }
 
+        public void ShowImage(Stream image)
+        {
+            
+            var ms = new MemoryStream();
+            image.CopyTo(ms);
+            ms.Position = 0;
+            var img = new Image();
+            img.BeginInit();
+            img.Source = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            img.Stretch = Stretch.None;
+            img.EndInit();
+            chatLb.Items.Add(img);
+        }
 
+        private void SendImageClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog() { Title = "Bild wählen", Filter = "Bild|*.png;*.jpg|Alle Dateien|*.*" };
+            if (server != null && dlg.ShowDialog() == true)
+            {
+                using (var stream = File.OpenRead(dlg.FileName))
+                {
+                    server.SendImage(stream);
+                }
+            }
+        }
     }
 }
