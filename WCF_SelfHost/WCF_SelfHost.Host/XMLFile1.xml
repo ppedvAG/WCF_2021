@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Daten xmlns:kk="http://ppedv.de/ns/2025/Kleidungsknöpfe" 
+       xmlns:WPF="http://ppedv.de/Schaltflächen">
+  
+  <Button xmlns="http://ppedv.de/Schaltflächen" Width="100"></Button>
+  <WPF:Button Width="100"></WPF:Button>
+
+  <Button xmlns="http://ppedv.de/ns/2021/Kleidungsknöpfe" AnzahlLöcher="2"/>
+  
+  <kk:Button AnzahlLöcher="3" />
+  
+
+</Daten>

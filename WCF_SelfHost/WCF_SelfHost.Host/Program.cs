@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 
 namespace WCF_SelfHost.Host
 {
@@ -16,12 +17,22 @@ namespace WCF_SelfHost.Host
             host.AddServiceEndpoint(typeof(IWetterService), new WSHttpBinding(), "http://localhost:3");
             host.AddServiceEndpoint(typeof(IWetterService), new NetNamedPipeBinding(), "net.pipe://localhost/Wetter");
 
+            var smb = new ServiceMetadataBehavior()
+            {
+                HttpGetUrl = new Uri("http://localhost:2/mex"),
+                HttpGetEnabled = true,
+                //HttpsGetEnabled=true,
+                //HttpsGetUrl = new Uri("https://localhost:4/mex")
+            };
+
+            host.Description.Behaviors.Add(smb);
+
             host.Open();
+
             Console.WriteLine("Service gestartet");
             Console.ReadLine();
             host.Close();
             Console.WriteLine("Service wurde beendet");
-
 
             Console.WriteLine("Ende");
             Console.ReadLine();

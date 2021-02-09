@@ -57,5 +57,9 @@
       <Name>WCF_SelfHost.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="XMLFile1.xml" />
+    <Content Include="XMLFile2.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
