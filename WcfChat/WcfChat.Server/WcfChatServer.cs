@@ -25,9 +25,32 @@ namespace WcfChat.Server
             {
                 callback.LoginResult("ok");
                 users.Add(callback, username);
-                callback.ShowUsers(users.Select(x => x.Value));
+                SendUserListToAllUsers();
             }
         }
+
+        private void SendUserListToAllUsers()
+        {
+            CallForAllUsers(x => x.ShowUsers(users.Select(u => u.Value)));
+        }
+
+        private void CallForAllUsers(Action<IClient> client)
+        {
+            foreach (var usr in users.ToList())
+            {
+                try
+                {
+                    client.Invoke(usr.Key);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"ERROR: {usr.Value}: {ex.Message}");
+                    users.Remove(usr.Key);
+                    SendUserListToAllUsers();
+                }
+            }
+        }
+
 
         public void Logout()
         {
@@ -37,6 +60,8 @@ namespace WcfChat.Server
             {
                 users.Remove(callback);
                 callback.LogoutResult("ok");
+                SendUserListToAllUsers();
+
             }
         }
 
@@ -54,18 +79,7 @@ namespace WcfChat.Server
             {
                 var msg = $"({senderName}) {text}";
 
-                foreach (var usr in users.ToList())
-                {
-                    try
-                    {
-                        usr.Key.ShowText(msg);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"\tError:{ex.Message}");
-                        users.Remove(callback);
-                    }
-                }
+                CallForAllUsers(x => x.ShowText(msg));
 
             }
         }
