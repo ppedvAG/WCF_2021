@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
+using System.ServiceModel.Security;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,10 +33,33 @@ namespace WcfChat.Client
         private void LoginClick(object sender, RoutedEventArgs e)
         {
             var netBind = new NetTcpBinding();
+            netBind.Security.Mode = SecurityMode.None;
             netBind.MaxReceivedMessageSize = int.MaxValue;
             var netAdr = "net.tcp://localhost:1";
 
-            var dcf = new DuplexChannelFactory<IServer>(this, netBind, netAdr);
+            var wsBind = new WSDualHttpBinding();
+            wsBind.Security.Mode = WSDualHttpSecurityMode.Message;
+            wsBind.Security.Message.ClientCredentialType = MessageCredentialType.Certificate;
+            
+
+
+            wsBind.MaxReceivedMessageSize = int.MaxValue;
+            var wsAdr = "http://localhost:2";
+
+
+
+            //var dcf = new DuplexChannelFactory<IServer>(this, netBind, netAdr);
+            var dcf = new DuplexChannelFactory<IServer>(this, wsBind, new EndpointAddress(new Uri(wsAdr), UpnEndpointIdentity.CreateDnsIdentity("RootCA")));
+
+            dcf.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
+            dcf.Credentials.ClientCertificate.SetCertificate(StoreLocation.LocalMachine, StoreName.My, X509FindType.FindByThumbprint, "607c288bc692426c900dafa7a77f29e0226f2ef1");
+
+
+
+            
+            dcf.Credentials.Windows.ClientCredential.UserName = "Fred";
+            dcf.Credentials.Windows.ClientCredential.Password = "123456";
+
             server = dcf.CreateChannel();
 
             server.Login(userNameTb.Text);
