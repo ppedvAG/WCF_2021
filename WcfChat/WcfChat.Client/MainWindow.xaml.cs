@@ -53,9 +53,6 @@ namespace WcfChat.Client
 
             dcf.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
             dcf.Credentials.ClientCertificate.SetCertificate(StoreLocation.LocalMachine, StoreName.My, X509FindType.FindByThumbprint, "607c288bc692426c900dafa7a77f29e0226f2ef1");
-
-
-
             
             dcf.Credentials.Windows.ClientCredential.UserName = "Fred";
             dcf.Credentials.Windows.ClientCredential.Password = "123456";
